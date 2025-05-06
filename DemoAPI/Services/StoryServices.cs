@@ -20,7 +20,7 @@ namespace DemoAPI.Services
             _configuration = configuration;
         }
 
-        public async Task<List<HackerNewsStory>> GetNewStoriesAsync(int offset, int pagesize)
+        public async Task<List<HackerNewsStory>> GetNewStoriesAsync()
         {
             _cache.TryGetValue("NewStories", out List<int>? ids);
 
@@ -36,7 +36,7 @@ namespace DemoAPI.Services
                 _cache.Set("NewStories", ids, TimeSpan.FromMinutes(10));
             }
 
-            var topIds = ids?.Skip(offset).Take(pagesize).ToList();
+            var topIds = ids?.Take(count).ToList();
             var stories = new List<HackerNewsStory>();
 
             for (int i = 0; i < topIds?.Count(); i++)

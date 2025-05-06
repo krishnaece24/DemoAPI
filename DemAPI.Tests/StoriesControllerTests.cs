@@ -22,10 +22,10 @@ namespace DemoAPI.Tests
         {
             // Arrange
             var stories = new List<HackerNewsStory> { new HackerNewsStory { Title = "Test Story", Url = "http://test.com" } };
-            _serviceMock.Setup(s => s.GetNewStoriesAsync(0,3)).Returns(Task.FromResult(stories));
+            _serviceMock.Setup(s => s.GetNewStoriesAsync()).Returns(Task.FromResult(stories));
 
             // Act
-            var result = _controller.GetNewStories(0,3);
+            var result = _controller.GetNewStories();
 
             // Assert
             Assert.IsType<Task<IActionResult>>(result);

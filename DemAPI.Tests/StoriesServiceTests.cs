@@ -82,13 +82,13 @@ namespace DemoAPI.Tests
 
             var httpClient = CreateHttpClientMock(responses);
 
-            _configuration.Setup(c => c["HackerNewsApi:TopCount"]).Returns("10");
+            _configuration.Setup(c => c["HackerNewsApi:TopCount"]).Returns("3");
             _configuration.Setup(c => c["HackerNewsApi:BaseAddress"]).Returns("https://hacker-news.firebaseio.com/v0/");
 
             var service = new StoryService(_memoryCache, _loggerMock.Object, httpClient, _configuration.Object);
 
             // Act
-            var stories = await service.GetNewStoriesAsync(0,3);
+            var stories = await service.GetNewStoriesAsync();
 
             // Assert
             Assert.Equal(3, stories.Count);

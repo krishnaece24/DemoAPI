@@ -21,9 +21,10 @@ namespace DemoAPI.Controllers
         /// <param name="pageSize"></param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> GetNewStories(int offset, int pagesize)
+        [Route("GetNewStories")]
+        public async Task<IActionResult> GetNewStories()
         {
-            var stories = await _storyService.GetNewStoriesAsync(offset, pagesize);
+            var stories = await _storyService.GetNewStoriesAsync();
             return Ok(stories);
         }
     }
