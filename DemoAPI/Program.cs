@@ -21,6 +21,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddMemoryCache();
 
 builder.Services.AddScoped<IStoryService, StoryService>();
+builder.Services.AddHttpClient();
+
 
 var app = builder.Build();
 

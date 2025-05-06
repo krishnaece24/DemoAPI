@@ -1,5 +1,7 @@
 ﻿using DemoAPI.Models;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
+using System.Text.Json;
 
 namespace DemoAPI.Services
 {
@@ -7,29 +9,42 @@ namespace DemoAPI.Services
     {
         private readonly IMemoryCache _cache;
         private readonly ILogger<StoryService> _logger;
+        private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
 
-        public StoryService(IMemoryCache cache, ILogger<StoryService> logger)
+        public StoryService(IMemoryCache cache, ILogger<StoryService> logger, HttpClient httpClient, IConfiguration configuration)
         {
             _cache = cache;
             _logger = logger;
+            _httpClient = httpClient;
+            _configuration = configuration;
         }
 
-        public List<Story> GetTopStoriesAsync()
+        public async Task<List<HackerNewsStory>> GetNewStoriesAsync(int offset, int pagesize)
         {
-            if (_cache.TryGetValue("TopStories", out List<Story> stories))
-                if (stories != null && stories.Count > 0)
-                    return stories;
+            _cache.TryGetValue("NewStories", out List<int>? ids);
 
-            stories = new List<Story>();
+            int count = Convert.ToInt32(_configuration["HackerNewsApi:TopCount"] ?? "0");
+            string? baseUrl = _configuration["HackerNewsApi:BaseAddress"];
+            _httpClient.BaseAddress = new Uri(baseUrl?? "");
 
-            for (int i = 1; i <= 200; i++)
+            if (ids == null || ids.Count == 0)
             {
-                Story story = new Story();
-                story.Title = "Story Number " + i;
-                story.Url = "Story URL " + i;
-                stories.Add(story);
+                var response = await _httpClient.GetStringAsync("topstories.json");
+                ids = JsonSerializer.Deserialize<List<int>>(response);
+
+                _cache.Set("NewStories", ids, TimeSpan.FromMinutes(10));
             }
-            _cache.Set("TopStories", stories, TimeSpan.FromMinutes(10));
+
+            var topIds = ids?.Skip(offset).Take(pagesize).ToList();
+            var stories = new List<HackerNewsStory>();
+
+            for (int i = 0; i < topIds?.Count(); i++)
+            {
+                HackerNewsStory story = new HackerNewsStory();
+                var storyJson = await _httpClient.GetStringAsync("item/" + topIds[i] + ".json");
+                stories.Add(JsonSerializer.Deserialize<HackerNewsStory>(storyJson) ?? new HackerNewsStory());
+            }
             return stories;
         }
     }

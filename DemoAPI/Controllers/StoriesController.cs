@@ -15,10 +15,15 @@ namespace DemoAPI.Controllers
             _storyService = storyService;
         }
 
+        /// <summary>
+        /// Get New Stories from Hacker API based on pagesize
+        /// </summary>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         [HttpGet]
-        public IActionResult GetStories()
+        public async Task<IActionResult> GetNewStories(int offset, int pagesize)
         {
-            var stories = _storyService.GetTopStoriesAsync();
+            var stories = await _storyService.GetNewStoriesAsync(offset, pagesize);
             return Ok(stories);
         }
     }

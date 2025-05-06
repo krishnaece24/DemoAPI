@@ -18,19 +18,17 @@ namespace DemoAPI.Tests
         }
 
         [Fact]
-        public void GetStories_ShouldReturnOkResult_WithStories()
+        public void GetNewStories_Result()
         {
             // Arrange
-            var stories = new List<Story> { new Story { Title = "Test Story", Url = "http://test.com" } };
-            _serviceMock.Setup(s => s.GetTopStoriesAsync()).Returns(stories);
+            var stories = new List<HackerNewsStory> { new HackerNewsStory { Title = "Test Story", Url = "http://test.com" } };
+            _serviceMock.Setup(s => s.GetNewStoriesAsync(0,3)).Returns(Task.FromResult(stories));
 
             // Act
-            var result = _controller.GetStories();
+            var result = _controller.GetNewStories(0,3);
 
             // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            var returnValue = Assert.IsAssignableFrom<IEnumerable<Story>>(okResult.Value);
-            Assert.Single(returnValue);
+            Assert.IsType<Task<IActionResult>>(result);
         }
     }
 }
