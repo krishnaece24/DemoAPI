@@ -21,11 +21,11 @@ namespace DemoAPI.Tests
         public void GetNewStories_Result()
         {
             // Arrange
-            var stories = new List<HackerNewsStory> { new HackerNewsStory { Title = "Test Story", Url = "http://test.com" } };
-            _serviceMock.Setup(s => s.GetNewStoriesAsync()).Returns(Task.FromResult(stories));
+            var stories = new List<HackerNewsStory> { new HackerNewsStory { title = "Test Story", url = "http://test.com" } };
+            _serviceMock.Setup(s => s.GetNewStoriesAsync(1, 3)).Returns(Task.FromResult(stories));
 
             // Act
-            var result = _controller.GetNewStories();
+            var result = _controller.GetNewStories(1,3);
 
             // Assert
             Assert.IsType<Task<IActionResult>>(result);

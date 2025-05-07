@@ -22,9 +22,9 @@ namespace DemoAPI.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("GetNewStories")]
-        public async Task<IActionResult> GetNewStories()
+        public async Task<IActionResult> GetNewStories(int page, int pagesize)
         {
-            var stories = await _storyService.GetNewStoriesAsync();
+            var stories = await _storyService.GetNewStoriesAsync(page, pagesize);
             return Ok(stories);
         }
     }

@@ -4,7 +4,7 @@ namespace DemoAPI.Services
 {
     public interface IStoryService
     {
-        Task<List<HackerNewsStory>> GetNewStoriesAsync();
+        Task<List<HackerNewsStory>> GetNewStoriesAsync(int page, int pagesize);
     }
 
 }

@@ -17,13 +17,13 @@ namespace DemoAPI.Tests
         public void Cache_ShouldStoreAndRetrieveValue()
         {
             var key = "TestKey";
-            var story = new HackerNewsStory { Title = "Cached Title", Url = "http://cached.com" };
+            var story = new HackerNewsStory { title = "Cached Title", url = "http://cached.com" };
 
             _memoryCache.Set(key, story, TimeSpan.FromMinutes(5));
             var exists = _memoryCache.TryGetValue(key, out HackerNewsStory cachedStory);
 
             Assert.True(exists);
-            Assert.Equal("Cached Title", cachedStory.Title);
+            Assert.Equal("Cached Title", cachedStory.title);
         }
     }
 }

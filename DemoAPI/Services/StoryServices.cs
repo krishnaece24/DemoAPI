@@ -20,11 +20,10 @@ namespace DemoAPI.Services
             _configuration = configuration;
         }
 
-        public async Task<List<HackerNewsStory>> GetNewStoriesAsync()
+        public async Task<List<HackerNewsStory>> GetNewStoriesAsync(int page, int pagesize)
         {
             _cache.TryGetValue("NewStories", out List<int>? ids);
 
-            int count = Convert.ToInt32(_configuration["HackerNewsApi:TopCount"] ?? "0");
             string? baseUrl = _configuration["HackerNewsApi:BaseAddress"];
             _httpClient.BaseAddress = new Uri(baseUrl?? "");
 
@@ -36,7 +35,7 @@ namespace DemoAPI.Services
                 _cache.Set("NewStories", ids, TimeSpan.FromMinutes(10));
             }
 
-            var topIds = ids?.Take(count).ToList();
+            var topIds = ids?.Skip((page -1) * pagesize).Take(pagesize).ToList();
             var stories = new List<HackerNewsStory>();
 
             for (int i = 0; i < topIds?.Count(); i++)
